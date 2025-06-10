@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BLOG - Strona Główna</title>
+    <!-- Usunięto: <script src="https://cdn.tailwindcss.com"></script> -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col p-4 sm:p-6 lg:p-8">
+    <header class="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-lg shadow-md mb-8">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-4 sm:mb-0">BLOG</h1>
+        <nav class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+            <button id="add-article-btn" class="w-full sm:w-auto px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md btn-hover-scale">
+                Dodaj artykuł
+            </button>
+            <button id="logout-btn" class="w-full sm:w-auto px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md btn-hover-scale">
+                Wyloguj
+            </button>
+            <a href="/zadanie-13/login/" id="login-link" class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md btn-hover-scale text-center block">
+                Zaloguj
+            </a>
+        </nav>
+    </header>
+
+    <main id="articles-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-grow"></main>
+
+    <div id="article-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl relative w-full max-w-lg md:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto">
+            <button id="modal-close-btn" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-2xl font-bold transition-transform duration-200 hover:scale-110" aria-label="Zamknij modal">
+                &times;
+            </button>
+            <form id="article-form" class="space-y-4">
+                <h2 id="modal-title" class="text-2xl font-bold text-gray-800 mb-4"></h2>
+                <input type="hidden" id="article-id" />
+
+                <div>
+                    <label for="article-title" class="block text-gray-700 font-medium mb-1">Tytuł:</label>
+                    <input type="text" id="article-title" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required />
+                </div>
+
+                <div>
+                    <label for="article-subtitle" class="block text-gray-700 font-medium mb-1">Podtytuł:</label>
+                    <input type="text" id="article-subtitle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required />
+                </div>
+
+                <div>
+                    <label for="article-author" class="block text-gray-700 font-medium mb-1">Autor:</label>
+                    <input type="text" id="article-author" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required />
+                </div>
+
+                <div>
+                    <label for="article-content" class="block text-gray-700 font-medium mb-1">Treść:</label>
+                    <textarea id="article-content" rows="6" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-md font-semibold hover:bg-blue-700 transition-all duration-300 ease-in-out transform hover:scale-105 shadow-md btn-hover-scale">
+                    Zapisz
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="message-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl relative w-full max-w-sm text-center">
+            <p id="message-text" class="text-lg font-semibold mb-4 text-gray-800"></p>
+            <button id="message-close-btn" class="px-6 py-2 bg-blue-600 text-white rounded-md font-semibold hover:bg-blue-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-hover-scale">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-xl relative w-full max-w-sm text-center">
+            <p id="confirm-text" class="text-lg font-semibold mb-4 text-gray-800"></p>
+            <div class="flex justify-center space-x-4">
+                <button id="confirm-yes-btn" class="px-6 py-2 bg-red-600 text-white rounded-md font-semibold hover:bg-red-700 transition-all duration-300 ease-in-out transform hover:scale-105 btn-hover-scale">
+                    Tak
+                </button>
+                <button id="confirm-no-btn" class="px-6 py-2 bg-gray-400 text-white rounded-md font-semibold hover:bg-gray-500 transition-all duration-300 ease-in-out transform hover:scale-105 btn-hover-scale">
+                    Nie
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/main.js"></script>
+</body>
+</html>

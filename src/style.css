@@ -1,0 +1,18 @@
+/* Tailwind CSS directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ustawienie domyślnej czcionki */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* Animacja hover dla przycisków */
+.btn-hover-scale {
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.btn-hover-scale:hover {
+    transform: scale(1.05);
+}
