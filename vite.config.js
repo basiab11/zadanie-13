@@ -1,37 +1,45 @@
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } = 'node:url';
+import { glob } from 'node:fs/promises';
 import { defineConfig } from 'vite';
-import { fileURLToPath } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = resolve(fileURLToPath(import.meta.url), '..');
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
-  base: '/zadanie-13/',
-  root: resolve(__dirname, 'src'),
-  build: {
-    emptyOutDir: true,
-    outDir: resolve(__dirname, 'dist'),
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src/index.html'),
-        login: resolve(__dirname, 'src/login/index.html')
-      },
-      external: ['fsevents'],
-    },
-  },
-  server: {
-    watch: {
-      usePolling: true,
-    },
-  },
-  optimizeDeps: {
-    exclude: ['fsevents', 'lightningcss', 'chokidar'],
-  },
-  ssr: {
-    noExternal: ['fsevents', 'lightningcss', 'chokidar'],
-  },
-  resolve: {
-    dedupe: ['fsevents', 'lightningcss', 'chokidar']
+async function getBuildInputs() {
+  const collectedInputs = [];
+  for await (const entry of glob('src/**/*.html')) {
+      collectedInputs.push(resolve(__dirname, entry));
   }
-});
+  return collectedInputs;
+}
 
+export default defineConfig(async ({ command, mode }) => {
+  const resolvedInputs = await getBuildInputs();
+
+  return {
+    base: '/zadanie-13/',
+    root: resolve(__dirname, 'src'),
+    build: {
+      emptyOutDir: true,
+      outDir: resolve(__dirname, 'dist'),
+      rollupOptions: {
+        input: resolvedInputs,
+        external: ['fsevents'],
+      },
+    },
+    server: {
+      watch: {
+        usePolling: true,
+      },
+    },
+    optimizeDeps: {
+      exclude: ['fsevents', 'lightningcss', 'chokidar'],
+    },
+    ssr: {
+      noExternal: ['fsevents', 'lightningcss', 'chokidar'],
+    },
+    resolve: {
+      dedupe: ['fsevents', 'lightningcss', 'chokidar']
+    }
+  };
+});
