@@ -1,66 +1,63 @@
-# Nazwa workflow, którą zobaczysz w zakładce "Actions" na GitHubie
+
 name: Deploy Vite project to GitHub Pages
 
-# Kiedy uruchomić ten workflow
+
 on:
   push:
     branches:
-      - main # Uruchom, gdy zmiany zostaną wypchnięte do gałęzi 'main'
-  workflow_dispatch: # Pozwala uruchomić ten workflow ręcznie z interfejsu GitHub
+      - main 
+  workflow_dispatch: 
 
-# Ustawia uprawnienia dla GITHUB_TOKEN, aby umożliwić wdrożenie na GitHub Pages
 permissions:
-  contents: read # Do odczytu kodu z repozytorium
-  pages: write   # Do zapisu plików na GitHub Pages
-  id-token: write # Wymagane przez środowiska OpenID Connect
+  contents: read 
+  pages: write   
+  id-token: write 
 
-# Zapewnij tylko jedno współbieżne wdrożenie, pomijając uruchomienia w kolejce pomiędzy bieżącym a ostatnim w kolejce.
-# Jednak NIE anuluj uruchomień w toku, ponieważ chcemy umożliwić ukończenie tych wdrożeń produkcyjnych.
+
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Zadanie budowania i publikowania
+
   build-and-deploy:
     environment:
-      name: github-pages # Zidentyfikuj środowisko wdrożeniowe
-      url: ${{ steps.deployment.outputs.page_url }} # URL opublikowanej strony
-    runs-on: ubuntu-latest # Uruchom na maszynie z Ubuntu
+      name: github-pages 
+      url: ${{ steps.deployment.outputs.page_url }} 
+    runs-on: ubuntu-latest 
 
     steps:
-      # Krok 1: Wyprowadź kod z repozytorium
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # Jest to wymagane, aby uzyskać pełną historię, jeśli używasz głębokiego klonowania
+          
           fetch-depth: 0
 
-      # Krok 2: Konfiguracja Node.js (Vite potrzebuje Node.js do budowania)
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Użyj stabilnej wersji Node.js, np. 20
+          node-version: '20' 
 
-      # Krok 3: Zainstaluj zależności projektu
+
       - name: Install dependencies
-        run: npm ci # 'npm ci' jest szybsze i bardziej niezawodne niż 'npm install' w środowiskach CI/CD
+        run: npm ci 
 
-      # Krok 4: Zbuduj projekt za pomocą Vite
       - name: Build project
         run: npm run build
 
-      # NOWY KROK DEBUGUJĄCY: Wyświetl zawartość zbudowanego index.html
-      - name: Show built index.html content
-        run: cat ./dist/index.html # Wyświetl zawartość pliku index.html z folderu dist
 
-      # Krok 5: Prześlij artefakt (folder 'dist') do GitHub Pages
+      - name: Show built index.html content
+        run: cat ./dist/index.html 
+
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist' # Ścieżka do zbudowanych plików (folder 'dist' generowany przez Vite)
+          path: './dist' 
+          
 
-      # Krok 6: Wdróż (Deploy) zbudowany projekt na GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 # Użyj akcji do wdrażania na GH Pages
+        uses: actions/deploy-pages@v4 
