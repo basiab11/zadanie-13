@@ -50,6 +50,10 @@ jobs:
       - name: Build project
         run: npm run build
 
+      # NOWY KROK DEBUGUJĄCY: Wyświetl zawartość zbudowanego index.html
+      - name: Show built index.html content
+        run: cat ./dist/index.html # Wyświetl zawartość pliku index.html z folderu dist
+
       # Krok 5: Prześlij artefakt (folder 'dist') do GitHub Pages
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
