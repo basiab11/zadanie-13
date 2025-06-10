@@ -1,53 +1,62 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+# Nazwa workflow, którą zobaczysz w zakładce "Actions" na GitHubie
+name: Deploy Vite project to GitHub Pages
 
+# Kiedy uruchomić ten workflow
 on:
-  # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches:
+      - main # Uruchom, gdy zmiany zostaną wypchnięte do gałęzi 'main'
+  workflow_dispatch: # Pozwala uruchomić ten workflow ręcznie z interfejsu GitHub
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# Ustawia uprawnienia dla GITHUB_TOKEN, aby umożliwić wdrożenie na GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read # Do odczytu kodu z repozytorium
+  pages: write   # Do zapisu plików na GitHub Pages
+  id-token: write # Wymagane przez środowiska OpenID Connect
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Zapewnij tylko jedno współbieżne wdrożenie, pomijając uruchomienia w kolejce pomiędzy bieżącym a ostatnim w kolejce.
+# Jednak NIE anuluj uruchomień w toku, ponieważ chcemy umożliwić ukończenie tych wdrożeń produkcyjnych.
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
+  # Zadanie budowania i publikowania
+  build-and-deploy:
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+      name: github-pages # Zidentyfikuj środowisko wdrożeniowe
+      url: ${{ steps.deployment.outputs.page_url }} # URL opublikowanej strony
+    runs-on: ubuntu-latest # Uruchom na maszynie z Ubuntu
+
     steps:
-      - name: Checkout
+      # Krok 1: Wyprowadź kod z repozytorium
+      - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Jest to wymagane, aby uzyskać pełną historię, jeśli używasz głębokiego klonowania
+          fetch-depth: 0
 
-      - name: Set up Node
+      # Krok 2: Konfiguracja Node.js (Vite potrzebuje Node.js do budowania)
+      - name: Setup Node.js
         uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Użyj stabilnej wersji Node.js, np. 20
 
-      - run: npm install
+      # Krok 3: Zainstaluj zależności projektu
+      - name: Install dependencies
+        run: npm ci # 'npm ci' jest szybsze i bardziej niezawodne niż 'npm install' w środowiskach CI/CD
 
-      - run: npm run build -- --base=/zadanie-13
+      # Krok 4: Zbuduj projekt za pomocą Vite
+      - name: Build project
+        run: npm run build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
+      # Krok 5: Prześlij artefakt (folder 'dist') do GitHub Pages
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: 'dist'
+          path: './dist' # Ścieżka do zbudowanych plików (folder 'dist' generowany przez Vite)
 
+      # Krok 6: Wdróż (Deploy) zbudowany projekt na GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4 # Użyj akcji do wdrażania na GH Pages
