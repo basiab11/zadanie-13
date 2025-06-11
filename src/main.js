@@ -1,8 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
     const SUPABASE_URL = "https://uegxvwvhocbfdwfijslb.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJissIjoic3VwYWJhc2UiLCJyZWYiOiJ1ZWd4dnd2aG9jYmZkd2ZpanNsYiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzQ5MjA5MzY2LCJleHAiOjIwNjQ3ODUzNjZ9.Z6TJ0gsMGJMFM1V4Gs6sKolzksfCBftiQaaPMUPmvcI";
-
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVlZ3h2d3Zob2NiZmR3Zmlqc2xiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMDkzNjYsImV4cCI6MjA2NDc4NTM2Nn0.Z6TJ0gsMGJMFM1V4Gs6sKolzksfCBftiQaaPMUPmvcI";
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const articlesList = document.getElementById('articles-list');
