@@ -66,7 +66,7 @@ function showConfirm(message) {
 }
 
 async function checkUser() {
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } = {} } = await supabase.auth.getUser();
   currentUser = user;
 
   if (currentUser) {
@@ -113,7 +113,8 @@ async function loadArticles() {
     `;
 
     const userOnlyDiv = articleEl.querySelector('[data-user-only]');
-    if (currentUser && currentUser.id === article.user_id) {
+    
+    if (currentUser) {
       const editBtn = document.createElement('button');
       editBtn.textContent = 'Edytuj';
       editBtn.className = 'flex-1 min-w-[120px] px-4 py-2 bg-yellow-500 text-white rounded-md font-semibold hover:bg-yellow-600 btn-hover-scale shadow-sm';
@@ -163,7 +164,7 @@ articleForm.addEventListener('submit', async (e) => {
   const title = articleTitleInput.value;
   const subtitle = articleSubtitleInput.value;
   const content = articleContentInput.value;
-  const author = articleAuthorInput.value; // ZMIENIONO: zmienna 'author' zamiast 'author_name'
+  const author = articleAuthorInput.value;
   const created_at = new Date().toISOString();
 
   if (!currentUser) {
@@ -172,11 +173,11 @@ articleForm.addEventListener('submit', async (e) => {
   }
 
   if (id) {
+
     const { error } = await supabase
       .from('zadanie-13')
-      .update({ title, subtitle, content, author, created_at }) // ZMIENIONO: używamy 'author'
-      .eq('id', id)
-      .eq('user_id', currentUser.id);
+      .update({ title, subtitle, content, author, created_at })
+      .eq('id', id); 
 
     if (error) {
       showMessage('Błąd aktualizacji artykułu: ' + error.message);
@@ -186,7 +187,7 @@ articleForm.addEventListener('submit', async (e) => {
   } else {
     const { error } = await supabase
       .from('zadanie-13')
-      .insert([{ title, subtitle, content, author, created_at, user_id: currentUser.id }]); // ZMIENIONO: używamy 'author'
+      .insert([{ title, subtitle, content, author, created_at, user_id: currentUser.id }]);
 
     if (error) {
       showMessage('Błąd dodawania artykułu: ' + error.message);
@@ -211,8 +212,7 @@ async function deleteArticle(id) {
   const { error } = await supabase
     .from('zadanie-13')
     .delete()
-    .eq('id', id)
-    .eq('user_id', currentUser.id);
+    .eq('id', id); 
 
   if (error) {
     showMessage('Błąd usuwania artykułu: ' + error.message);
